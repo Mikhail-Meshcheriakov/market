@@ -21,16 +21,15 @@ public class ProductService {
         return (List<Product>) productRepository.findAll();
     }
 
-    public List<Product> findAllByPriceGreater(int min) {
-        return productRepository.findAllByPriceGreaterThanEqual(min);
-    }
-
-    public List<Product> findAllByPriceLess(int max) {
-        return productRepository.findAllByPriceLessThanEqual(max);
-    }
-
-    public List<Product> findAllByPrice(int min, int max) {
-        return productRepository.findAllByPriceBetween(min, max);
+    public List<Product> findAllByPrice(int min, int max, int page) {
+        List<Product> products = productRepository.findAllByPriceBetween(min, max);
+        int numberOfProducts = products.size();
+        if (page <= 0 || (page * 10) > numberOfProducts) {
+            page = 1;
+        }
+        int fromIndex = page * 10 - 10;
+        int toIndex = Math.min(page * 10, numberOfProducts);
+        return products.subList(fromIndex, toIndex);
     }
 
     public Product saveOrUpdate(Product product) {

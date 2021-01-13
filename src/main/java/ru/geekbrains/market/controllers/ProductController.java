@@ -19,17 +19,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts(@RequestParam(required = false) Integer min_price, @RequestParam(required = false) Integer max_price) {
-        if (min_price != null && max_price != null) {
-            return productService.findAllByPrice(min_price, max_price);
+    public List<Product> getAllProducts(@RequestParam(name = "minPrice", defaultValue = "0") Integer minPrice,
+                                        @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
+                                        @RequestParam(name = "page", defaultValue = "1") Integer page) {
+        if (maxPrice == null) {
+            maxPrice = Integer.MAX_VALUE;
         }
-        if (min_price != null) {
-            return productService.findAllByPriceGreater(min_price);
-        }
-        if (max_price != null) {
-            return productService.findAllByPriceLess(max_price);
-        }
-        return (List<Product>) productService.findAll();
+        return productService.findAllByPrice(minPrice, maxPrice, page);
     }
 
     @PostMapping
