@@ -1,11 +1,11 @@
 package ru.geekbrains.market.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import ru.geekbrains.market.dto.ProductDto;
 import ru.geekbrains.market.model.Product;
 import ru.geekbrains.market.services.ProductService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -14,26 +14,32 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public ProductDto getProductById(@PathVariable Long id) {
         return productService.findProductById(id).get();
     }
 
     @GetMapping
-    public List<Product> getAllProducts(@RequestParam(name = "minPrice", defaultValue = "0") Integer minPrice,
-                                        @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
-                                        @RequestParam(name = "page", defaultValue = "1") Integer page) {
-        if (maxPrice == null) {
-            maxPrice = Integer.MAX_VALUE;
+    public Page<ProductDto> getAllProducts(@RequestParam(name = "min_price", defaultValue = "0") Integer minPrice,
+                                           @RequestParam(name = "max_price", required = false) Integer maxPrice,
+                                           @RequestParam(name = "page", defaultValue = "1") Integer page) {
+        if (page < 1) {
+            page = 1;
         }
-        return productService.findAllByPrice(minPrice, maxPrice, page);
+        return productService.findAll(page);
     }
 
     @PostMapping
-    public Product savaNewProduct(@RequestBody Product product) {
+    public ProductDto savaNewProduct(@RequestBody Product product) {
+        product.setId(null);
         return productService.saveOrUpdate(product);
     }
 
-    @GetMapping("/delete/{id}")
+    @PutMapping
+    public ProductDto updateProduct(@RequestBody Product product) {
+        return productService.saveOrUpdate(product);
+    }
+
+    @DeleteMapping("/{id}")
     public void deleteProductById(@PathVariable Long id) {
         productService.deleteProductById(id);
     }
