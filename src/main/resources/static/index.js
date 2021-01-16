@@ -22,12 +22,10 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             });
     };
 
-    $scope.deleteProductById = function (p) {
-        $http({
-            url: contextPath + '/products/delete/' + p.id,
-            method: 'GET'
-        }).then(function (response) {
-               $scope.fillTable()
+    $scope.deleteProductById = function (productId) {
+        $http.get(contextPath + '/products/delete/' + productId)
+            .then(function (response) {
+                $scope.fillTable();
             });
     }
 
