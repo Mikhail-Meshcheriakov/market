@@ -19,4 +19,5 @@ insert into products (title, price) values
 ('pork', 386),
 ('chicken eggs', 58),
 ('mayonnaise', 82),
-('ketchup', 94);
+('ketchup', 94),
+('carrot', 42);
